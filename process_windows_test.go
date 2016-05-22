@@ -9,5 +9,5 @@ func TestFindProcessWindows(t *testing.T) {
 }
 
 func TestProcessesWindows(t *testing.T) {
-	testProcesses(t, "go")
+	testProcesses(t, "go.exe")
 }

@@ -70,6 +70,10 @@ func (p *UnixProcess) Refresh() error {
 }
 
 func findProcess(pid int) (Process, error) {
+	return findProcessWithFn(processes, pid)
+}
+
+func findProcessWithFn(processesFn processesFn, pid int) (Process, error) {
 	dir := fmt.Sprintf("/proc/%d", pid)
 	_, err := os.Stat(dir)
 	if err != nil {

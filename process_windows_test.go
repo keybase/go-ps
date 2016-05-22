@@ -12,7 +12,6 @@ import (
 
 func TestFindProcessWindows(t *testing.T) {
 	testFindProcess(t, "go-ps.test.exe")
-	assert.True(t, proc.PPid() > 0)
 }
 
 func TestProcessesWindows(t *testing.T) {

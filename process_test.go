@@ -14,6 +14,7 @@ func testFindProcess(t *testing.T, name string) Process {
 	require.NoError(t, err)
 	require.NotNil(t, proc)
 	assert.Equal(t, os.Getpid(), proc.Pid())
+	assert.True(t, proc.PPid() > 0)
 
 	if name != "" {
 		assert.Equal(t, name, proc.Executable())

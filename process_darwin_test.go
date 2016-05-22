@@ -11,7 +11,8 @@ import (
 )
 
 func TestFindProcessDarwin(t *testing.T) {
-	testFindProcess(t, "go-ps.test")
+	proc := testFindProcess(t, "go-ps.test")
+	assert.Equal(t, 0, proc.PPid())
 }
 
 func TestProcessesDarwin(t *testing.T) {

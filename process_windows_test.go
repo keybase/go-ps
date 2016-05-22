@@ -1,11 +1,11 @@
-// +build darwin
+// +build windows
 
 package ps
 
 import "testing"
 
-func TestFindProcessDarwin(t *testing.T) {
-	testFindProcess(t, "go-ps.test")
+func TestFindProcessWindows(t *testing.T) {
+	testFindProcess(t, "go-ps.test.exe")
 }
 
 func TestProcessesWindows(t *testing.T) {

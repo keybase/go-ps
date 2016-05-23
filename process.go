@@ -22,7 +22,8 @@ type Process interface {
 	// executable.
 	Executable() string
 
-	// Path is full path to the executable.
+	// Path is full path to the executable. The path may be unavailable if the
+	// exectuable was deleted from the system while it was still running.
 	Path() (string, error)
 }
 

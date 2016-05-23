@@ -12,6 +12,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestProcessExecRun(t *testing.T) {
+	procPath, cmd, _ := testExecRun(t)
+	defer cleanup(cmd, procPath)
+}
+
 func testProcessPath(t *testing.T, procPath string) Process {
 	matchPath := func(p Process) bool {
 		return matchPath(t, p, procPath)
@@ -45,14 +50,13 @@ func testExecPath(t *testing.T) string {
 	return procPath
 }
 
-func testExecRun(t *testing.T) (string, Process) {
+func testExecRun(t *testing.T) (string, *exec.Cmd, Process) {
 	procPath := testExecPath(t)
 	cmd := exec.Command(procPath, "10")
-	defer cleanup(cmd, procPath)
 	err := cmd.Start()
 	require.NoError(t, err)
 	proc := testProcessPath(t, procPath)
-	return procPath, proc
+	return procPath, cmd, proc
 }
 
 func copyFile(sourcePath string, destinationPath string, mode os.FileMode) error {

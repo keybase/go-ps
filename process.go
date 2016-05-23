@@ -7,6 +7,8 @@
 // are interested.
 package ps
 
+import "fmt"
+
 // Process is the generic interface that is implemented on every platform
 // and provides common operations for processes.
 type Process interface {
@@ -43,3 +45,30 @@ func Processes() ([]Process, error) {
 func FindProcess(pid int) (Process, error) {
 	return findProcess(pid)
 }
+
+type matchFn func(Process) bool
+
+// findProcessesWithFn finds processes using match function.
+// If max is != 0, then we will return that max number of processes.
+func findProcessesWithFn(processesFn processesFn, matchFn matchFn, max int) ([]Process, error) {
+	processes, err := processesFn()
+	if err != nil {
+		return nil, fmt.Errorf("Error listing processes: %s", err)
+	}
+	if processes == nil {
+		return nil, nil
+	}
+	procs := []Process{}
+	for _, p := range processes {
+		if matchFn(p) {
+			procs = append(procs, p)
+		}
+		if max != 0 && len(procs) >= max {
+			break
+		}
+	}
+	return procs, nil
+}
+
+// Avoid linting error
+var _ = findProcessesWithFn

@@ -85,6 +85,9 @@ func copyFile(sourcePath string, destinationPath string, mode os.FileMode) error
 
 func matchPath(t *testing.T, p Process, match string) bool {
 	path, err := p.Path()
-	require.NoError(t, err)
+	if err != nil {
+		t.Logf("Error trying to get path: %s", err)
+		return false
+	}
 	return path == match
 }

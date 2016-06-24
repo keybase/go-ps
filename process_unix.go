@@ -36,7 +36,7 @@ func (p *UnixProcess) PPid() int {
 
 // Executable returns process executable name
 func (p *UnixProcess) Executable() string {
-	path, err := Path()
+	path, err := p.Path()
 	if err != nil {
 		// Fall back to binary name which might be truncated
 		return p.binary

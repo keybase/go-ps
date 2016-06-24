@@ -64,6 +64,7 @@ func (p *UnixProcess) Refresh() error {
 	p.binary = data[binStart : binStart+binEnd]
 
 	// Move past the image name and start parsing the rest
+	// The name here might not be the full name
 	data = data[binStart+binEnd+2:]
 	_, err = fmt.Sscanf(data,
 		"%c %d %d %d",

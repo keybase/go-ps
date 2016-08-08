@@ -5,7 +5,7 @@ package ps
 import (
 	"bytes"
 	"encoding/binary"
-	"os/exec"
+	"fmt"
 	"syscall"
 	"unsafe"
 )

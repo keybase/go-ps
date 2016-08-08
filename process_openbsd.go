@@ -164,67 +164,10 @@ func (p *UnixProcess) Executable() string {
 
 // Path returns path to process executable
 func (p *UnixProcess) Path() (string, error) {
-	// Adapted from aja's fix for osext:
-	// https://github.com/kardianos/osext/commit/b4814f465fb1f92d46e37f7ef84d732ece7c3e3a
-
-	var args []string
-	var execPath string
-	mib := []int32{CTL_KERN, KERN_PROC_ARGS, int32(p.pid), KERN_PROC_ARGV}
-	n := uintptr(0)
-
-	_, _, errNum := syscall.Syscall6(syscall.SYS___SYSCTL, uintptr(unsafe.Pointer(&mib[0])), 4, 0, uintptr(unsafe.Pointer(&n)), 0, 0)
-	if errNum != 0 {
-		return "", errNum
-	}
-	if n == 0 { // This shouldn't happen.
-		return "", nil
-	}
-
-	buf := make([]byte, n)
-	_, _, errNum = syscall.Syscall6(syscall.SYS___SYSCTL, uintptr(unsafe.Pointer(&mib[0])), 4, uintptr(unsafe.Pointer(&buf[0])), uintptr(unsafe.Pointer(&n)), 0, 0)
-	if errNum != 0 {
-		return "", errNum
-	}
-	if n == 0 { // This shouldn't happen.
-		return "", nil
-	}
-
-	argv := uintptr(unsafe.Pointer(&buf[0]))
-Loop:
-	for {
-		argp := *(**[1 << 20]byte)(unsafe.Pointer(argv))
-		if argp == nil {
-			break
-		}
-		for i := 0; uintptr(i) < n; i++ {
-			// we don't want the full arguments list
-			if string(argp[i]) == " " {
-				break Loop
-			}
-			if argp[i] != 0 {
-				continue
-			}
-			args = append(args, string(argp[:i]))
-			n -= uintptr(i)
-			break
-		}
-		if n < unsafe.Sizeof(argv) {
-			break
-		}
-		argv += unsafe.Sizeof(argv)
-		n -= unsafe.Sizeof(argv)
-	}
-	execPath = args[0]
-	// There is no canonical way to get an executable path on
-	// OpenBSD, so check PATH in case we are called directly
-	if execPath[0] != '/' && execPath[0] != '.' {
-		execIsInPath, err := exec.LookPath(execPath)
-		if err == nil {
-			execPath = execIsInPath
-		}
-	}
-
-	return execPath, nil
+	// On OpenBSD we don't have the actual path of a binary, the next
+	// best thing we can do is walk $PATH to hopefully find the binary.
+	// More info here: https://github.com/kardianos/osext/commit/b4814f465fb1f92d46e37f7ef84d732ece7c3e3a
+	return "", fmt.Errorf("Unsupported")
 }
 
 // Refresh reloads all the data associated with this process.

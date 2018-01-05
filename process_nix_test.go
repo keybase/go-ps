@@ -1,4 +1,4 @@
-// +build darwin linux
+// +build darwin linux dragonfly
 
 package ps
 
